@@ -225,3 +225,27 @@ print("F1 Score:", f1_score(y_test, knn_preds))
 print("\nClassification Report:\n", classification_report(y_test, knn_preds))
 print("Confusion Matrix:\n", confusion_matrix(y_test, knn_preds))
 
+from sklearn.metrics import roc_curve, auc
+
+# For Decision Tree
+y_proba_dt = dt_model.predict_proba(X_test)[:,1]
+fpr_dt, tpr_dt, _ = roc_curve(y_test, y_proba_dt)
+roc_auc_dt = auc(fpr_dt, tpr_dt)
+
+# For KNN
+y_proba_knn = knn_model.predict_proba(X_test_scaled)[:,1]
+fpr_knn, tpr_knn, _ = roc_curve(y_test, y_proba_knn)
+roc_auc_knn = auc(fpr_knn, tpr_knn)
+
+# Plot ROC Curves
+plt.figure(figsize=(8, 6))
+plt.plot(fpr_dt, tpr_dt, label=f'Decision Tree (AUC = {roc_auc_dt:.2f})')
+plt.plot(fpr_knn, tpr_knn, label=f'KNN (AUC = {roc_auc_knn:.2f})')
+plt.plot([0, 1], [0, 1], 'k--', label='Random Classifier')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curves for DT and KNN')
+plt.legend()
+plt.grid()
+plt.show()
+
